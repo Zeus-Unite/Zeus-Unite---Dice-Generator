@@ -1,182 +1,178 @@
-using System.Collections;
-using UnityEngine;
-using ZeusUnite.Dice;
-using TMPro;
-using UnityEngine.UI;
 using System;
-using UnityEngine.SocialPlatforms;
+using System.Collections;
+using TMPro;
+using UnityEngine;
 
-public class Dicer : MonoBehaviour
+namespace ZeusUnite.Dice
 {
-    public static Dicer Instance
+    public class Dicer : MonoBehaviour
     {
-        get
+        public static Dicer Instance
         {
-            if(instance == null)
-                instance = FindObjectOfType<Dicer>();
-
-            if(instance == null)
+            get
             {
-                Dicer d = Resources.Load<Dicer>("Dicer/DiceGenerator");
-                Dicer go = Instantiate(d);
-                instance = go;
+                if (instance == null)
+                    instance = FindObjectOfType<Dicer>();
+
+                if (instance == null)
+                {
+                    Dicer d = Resources.Load<Dicer>("Dicer/DiceGenerator");
+                    Dicer go = Instantiate(d);
+                    instance = go;
+                }
+
+                return instance;
             }
-
-            return instance;
-        }
-    }
-
-    private void Awake()
-    {
-        anim = GetComponent<Animator>();
-    }
-
-    [SerializeField] Transform DicePanel = null;
-
-    [SerializeField] TextMeshProUGUI randomNumberText = null;
-
-    static Dicer instance;
-
-    bool isRolling;
-    Animator anim = null;
-
-
-    DiceRoller lastRolledDice;
-    public DiceRoller LastRolledDice { get => lastRolledDice; set => lastRolledDice = value; }
-    public PercentageRoller LastRolledPercentage { get => lastRolledPercentage; set => lastRolledPercentage = value; }
-    public CharRoller LastRolledCharacter { get => lastRolledCharacter; set => lastRolledCharacter = value; }
-
-    PercentageRoller lastRolledPercentage;
-    CharRoller lastRolledCharacter;
-
-
-    public void OpenDicePanel(Action<DiceRoller> callback, int range)
-    {
-        if (isRolling)
-            return;
-
-        isRolling = true;
-
-        DicePanel.gameObject.SetActive(true);
-        anim.SetBool("Open", true);
-
-        StartCoroutine(RotateDice(callback, range));
-    }
-
-    public void OpenPercentagePanel(Action<PercentageRoller> callback)
-    {
-        if (isRolling)
-            return;
-
-        isRolling = true;
-
-        DicePanel.gameObject.SetActive(true);
-        anim.SetBool("Open", true);
-
-        StartCoroutine(RotatePercentage(callback));
-
-    }
-
-    public void OpenAlphabeticPanel(Action<CharRoller> callback)
-    {
-        if (isRolling)
-            return;
-
-        isRolling = true;
-
-        DicePanel.gameObject.SetActive(true);
-        anim.SetBool("Open", true);
-
-        StartCoroutine(RotateCharacter(callback));
-    }
-
-    IEnumerator RotateDice(Action<DiceRoller> callback, int range)
-    {
-        yield return null;
-        WaitForSeconds wfs = new WaitForSeconds(Time.deltaTime);
-
-        float rotateTime = 2f;
-        float nextTime = 0f;
-
-        while (rotateTime > 0)
-        {
-            rotateTime -= Time.deltaTime;
-            nextTime += Time.deltaTime;
-
-            if (nextTime > .05f)
-            {
-                LastRolledDice = new DiceRoller(1, range);
-                randomNumberText.text = LastRolledDice.rolledValue.ToString();
-                nextTime = 0f;
-            }
-
-            yield return wfs;
         }
 
-        callback(LastRolledDice);
+        static Dicer instance;
 
-        isRolling = false;
-        yield return new WaitForSeconds(2f);
-        anim.SetBool("Open", false);
-    }
-
-    IEnumerator RotatePercentage(Action<PercentageRoller> callback)
-    {
-        yield return null;
-        WaitForSeconds wfs = new WaitForSeconds(Time.deltaTime);
-
-        float rotateTime = 2f;
-        float nextTime = 0f;
-
-        while (rotateTime > 0)
+        private void Awake()
         {
-            rotateTime -= Time.deltaTime;
-            nextTime += Time.deltaTime;
-
-            if (nextTime > .05f)
-            {
-                LastRolledPercentage = new PercentageRoller();
-                randomNumberText.text = LastRolledPercentage.rolledValue.ToString();
-                nextTime = 0f;
-            }
-
-            yield return wfs;
+            anim = GetComponent<Animator>();
         }
 
-        callback(LastRolledPercentage);
+        [SerializeField] Transform DicePanel = null;
+        [SerializeField] TextMeshProUGUI randomNumberText = null;
 
-        isRolling = false;
-        yield return new WaitForSeconds(2f);
-        anim.SetBool("Open", false);
-    }
+        DiceRoller lastRolledDice;
+        PercentageRoller lastRolledPercentage;
+        CharRoller lastRolledCharacter;
 
-    IEnumerator RotateCharacter(Action<CharRoller> callback)
-    {
-        yield return null;
-        WaitForSeconds wfs = new WaitForSeconds(Time.deltaTime);
+        public DiceRoller LastRolledDice { get => lastRolledDice; set => lastRolledDice = value; }
+        public PercentageRoller LastRolledPercentage { get => lastRolledPercentage; set => lastRolledPercentage = value; }
+        public CharRoller LastRolledCharacter { get => lastRolledCharacter; set => lastRolledCharacter = value; }
 
-        float rotateTime = 2f;
-        float nextTime = 0f;
+        bool isRolling;
+        Animator anim = null;
 
-        while (rotateTime > 0)
+        public void OpenDicePanel(Action<DiceRoller> callback, int range)
         {
-            rotateTime -= Time.deltaTime;
-            nextTime += Time.deltaTime;
+            if (isRolling)
+                return;
 
-            if (nextTime > .05f)
-            {
-                lastRolledCharacter = new CharRoller();
-                randomNumberText.text = lastRolledCharacter.rolledValue.ToString();
-                nextTime = 0f;
-            }
+            isRolling = true;
 
-            yield return wfs;
+            DicePanel.gameObject.SetActive(true);
+            anim.SetBool("Open", true);
+
+            StartCoroutine(RotateDice(callback, range));
         }
 
-        callback(lastRolledCharacter);
+        public void OpenPercentagePanel(Action<PercentageRoller> callback)
+        {
+            if (isRolling)
+                return;
 
-        isRolling = false;
-        yield return new WaitForSeconds(2f);
-        anim.SetBool("Open", false);
+            isRolling = true;
+
+            DicePanel.gameObject.SetActive(true);
+            anim.SetBool("Open", true);
+
+            StartCoroutine(RotatePercentage(callback));
+        }
+
+        public void OpenAlphabeticPanel(Action<CharRoller> callback)
+        {
+            if (isRolling)
+                return;
+
+            isRolling = true;
+
+            DicePanel.gameObject.SetActive(true);
+            anim.SetBool("Open", true);
+
+            StartCoroutine(RotateCharacter(callback));
+        }
+
+        IEnumerator RotateDice(Action<DiceRoller> callback, int range)
+        {
+            yield return null;
+            WaitForSeconds wfs = new WaitForSeconds(Time.deltaTime);
+
+            float rotateTime = 2f;
+            float nextTime = 0f;
+
+            while (rotateTime > 0)
+            {
+                rotateTime -= Time.deltaTime;
+                nextTime += Time.deltaTime;
+
+                if (nextTime > .05f)
+                {
+                    LastRolledDice = new DiceRoller(1, range);
+                    randomNumberText.text = LastRolledDice.rolledValue.ToString();
+                    nextTime = 0f;
+                }
+
+                yield return wfs;
+            }
+
+            callback(LastRolledDice);
+
+            isRolling = false;
+            yield return new WaitForSeconds(2f);
+            anim.SetBool("Open", false);
+        }
+
+        IEnumerator RotatePercentage(Action<PercentageRoller> callback)
+        {
+            yield return null;
+            WaitForSeconds wfs = new WaitForSeconds(Time.deltaTime);
+
+            float rotateTime = 2f;
+            float nextTime = 0f;
+
+            while (rotateTime > 0)
+            {
+                rotateTime -= Time.deltaTime;
+                nextTime += Time.deltaTime;
+
+                if (nextTime > .05f)
+                {
+                    LastRolledPercentage = new PercentageRoller();
+                    randomNumberText.text = LastRolledPercentage.rolledValue.ToString();
+                    nextTime = 0f;
+                }
+
+                yield return wfs;
+            }
+
+            callback(LastRolledPercentage);
+
+            isRolling = false;
+            yield return new WaitForSeconds(2f);
+            anim.SetBool("Open", false);
+        }
+
+        IEnumerator RotateCharacter(Action<CharRoller> callback)
+        {
+            yield return null;
+            WaitForSeconds wfs = new WaitForSeconds(Time.deltaTime);
+
+            float rotateTime = 2f;
+            float nextTime = 0f;
+
+            while (rotateTime > 0)
+            {
+                rotateTime -= Time.deltaTime;
+                nextTime += Time.deltaTime;
+
+                if (nextTime > .05f)
+                {
+                    lastRolledCharacter = new CharRoller();
+                    randomNumberText.text = lastRolledCharacter.rolledValue.ToString();
+                    nextTime = 0f;
+                }
+
+                yield return wfs;
+            }
+
+            callback(lastRolledCharacter);
+
+            isRolling = false;
+            yield return new WaitForSeconds(2f);
+            anim.SetBool("Open", false);
+        }
     }
 }

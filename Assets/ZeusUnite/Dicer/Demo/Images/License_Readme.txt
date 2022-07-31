@@ -8,7 +8,7 @@ dice-six-faces-one by Delapouite
 dice-twenty-faces-twenty by Delapouite
 
 -------------------------------------------------------
-Zeus Unite - Dice Roller Logo:
+Zeus Unite - Dice Generator Logo:
 https://www.stusse-games.com
 under License:
 Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) 
